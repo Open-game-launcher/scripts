@@ -1,0 +1,11 @@
+[package]
+name = "open-game-launcher-scripts"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "checksum"
+path = "src/main.rs"
+
+[dependencies]
+md5 = "0.7.0"
