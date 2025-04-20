@@ -21,6 +21,8 @@ fn main() -> Result<(), io::Error> {
         panic!("Invalid directory {}", initial_dir.display());
     }
 
+    eprintln!("Processing files...");
+
     match walk_dir(&initial_dir) {
         Ok(files) => {
             let  stdout = io::stdout();
@@ -31,10 +33,17 @@ fn main() -> Result<(), io::Error> {
                     continue;
                 }
 
+                let filename = file.strip_prefix(&initial_dir).unwrap().display();
+
+                // Skip checksum file
+                if filename.to_string().starts_with("checksum") {
+                    continue;
+                }
+
                 let bytes = fs::read(file)?;
                 let file_length = bytes.len();
                 let hash = md5::compute(&bytes);
-                if let Err(e) = writeln!(handle, "{}\t{:?}\t{}", file.display(), hash, file_length)
+                if let Err(e) = writeln!(handle, "{}\t{:?}\t{}", filename, hash, file_length)
                 {
                     eprintln!("{}", e);
                 }
